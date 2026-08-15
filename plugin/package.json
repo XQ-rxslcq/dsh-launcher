@@ -1,0 +1,35 @@
+{
+  "name": "@dsh-external/dsh-launcher",
+  "description": "DSH 启动器插件：设置页「启动器设置」配置路径/图标/表情/启动方式，/launcher 命令唤起隐藏命令行启动 + DS娘翻转动画窗口",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "dist/dsh-launcher.exe",
+    "assets"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-settings"
+      ]
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/schemastery": "^3.18.0"
+  },
+  "license": "MIT"
+}

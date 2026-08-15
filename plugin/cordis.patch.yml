@@ -1,0 +1,8 @@
+# dsh-launcher plugin bundle patch
+# 挂载一个 host 行：`@dsh-external/dsh-launcher`（host 半边 index.js）。
+# client 半边（设置页「启动器设置」）由 package.json 的 dsh.client manifest 声明，无需在此列行。
+# inject 让 loader 在 webServer 服务就绪后再激活本行，确保 /launcher/api 路由能注册。
+- insert:
+    - id: launcher
+      name: '@dsh-external/dsh-launcher'
+      inject: [webServer]

@@ -1,0 +1,12 @@
+{
+  "url": "http://127.0.0.1:3080",
+  "port": 3080,
+  "timeoutSeconds": 120,
+  "workingDirectory": "",
+  "mode": "wait",
+  "pnpmCandidates": [],
+  "methods": [
+    { "name": "pnpm dsh web（主）", "file": "pnpm", "args": ["dsh", "web"] },
+    { "name": "node 直启 built CLI（备用）", "file": "node", "args": ["apps/cli/lib/bin.js", "web"] }
+  ]
+}
