@@ -28,12 +28,17 @@ if (-not (Test-Path (Join-Path $refBase 'PresentationFramework.dll'))) { throw "
 $refs = @('PresentationFramework.dll','PresentationCore.dll','WindowsBase.dll','System.Xaml.dll') |
   ForEach-Object { "/reference:" + (Join-Path $refBase $_) }
 
-# --- compile（不嵌入任何图片资源） ---
+# --- compile ---
+# 可选：若本地存在 assets/icon.ico（已 .gitignore，不进仓库），编译时嵌入为 exe 文件图标；
+# 否则纯代码编译，exe 使用系统默认图标。
 $outExe = Join-Path $dist 'dsh-launcher.exe'
+$iconIco = Join-Path $proj 'assets\icon.ico'
+$iconArgs = @()
+if (Test-Path $iconIco) { $iconArgs += "/win32icon:$iconIco" }
 $args = @(
   '/nologo', '/target:winexe',
   "/out:$outExe"
-) + $refs + @(Join-Path $proj 'src\Launcher.cs')
+) + $iconArgs + $refs + @(Join-Path $proj 'src\Launcher.cs')
 
 & $csc $args
 if ($LASTEXITCODE -ne 0) { throw "csc failed with exit code $LASTEXITCODE" }

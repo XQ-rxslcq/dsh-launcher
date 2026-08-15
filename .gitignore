@@ -6,3 +6,12 @@ Thumbs.db
 # 本地测试用素材（个人使用，不进仓库/不分发）
 .local-assets/
 .tmp-download/
+
+# 本地编译用图标（放入 assets/icon.ico 则编译时嵌入 exe，但不进仓库）
+assets/*.ico
+assets/*.png
+assets/*.jpg
+assets/*.jpeg
+assets/*.webp
+assets/*.bmp
+assets/*.gif
