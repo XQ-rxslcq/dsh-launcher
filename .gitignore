@@ -7,6 +7,10 @@ Thumbs.db
 .local-assets/
 .tmp-download/
 
+# 打包产物与图标转换中间文件
+*.tgz
+*.tgz.ico
+
 # 本地编译用图标（放入 assets/icon.ico 则编译时嵌入 exe，但不进仓库）
 assets/*.ico
 assets/*.png
