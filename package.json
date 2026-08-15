@@ -1,6 +1,6 @@
 {
   "name": "@dsh-external/dsh-launcher",
-  "description": "DSH 启动器插件：设置页「启动器设置」配置路径/图标/表情/启动方式，/launcher 命令唤起隐藏命令行启动 + DS娘翻转动画窗口",
+  "description": "DSH 启动器插件：设置页「启动器设置」配置路径/图标/图片/启动方式，/launcher 命令唤起隐藏命令行启动 + 图片翻转动画窗口",
   "version": "0.1.0",
   "private": true,
   "type": "module",

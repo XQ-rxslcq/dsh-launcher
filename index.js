@@ -3,7 +3,7 @@
 //    变化即写 %DSH_HOME%/launcher-config.json（启动器 exe 读取）。
 // 2) 注册 POST /launcher/api：client 半边设置页通过它读写配置
 //    （绕开 api-proxy 的 settings 白名单，因为第三方命名空间不暴露给浏览器）。
-// 3) /launcher 命令 → 唤起启动器 exe（隐藏命令行 + DS娘翻转动画 + 自动开浏览器）。
+// 3) /launcher 命令 → 唤起启动器 exe（隐藏命令行 + 图片翻转动画 + 自动开浏览器）。
 import { join, dirname } from 'node:path'
 import { homedir } from 'node:os'
 import { writeFileSync, existsSync } from 'node:fs'
@@ -151,7 +151,7 @@ export function apply(ctx) {
 
   ctx.commands.register({
     name: 'launcher',
-    description: '启动/重启 DeepSeek Harness（弹出 DS娘 启动动画窗口）',
+    description: '启动/重启 DeepSeek Harness（弹出启动动画窗口）',
     handler: () => {
       try {
         writeConfig()
