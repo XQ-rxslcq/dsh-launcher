@@ -120,6 +120,21 @@ window.__ModuleLoader__.load({
         });
       }
 
+      var cs = React.useState({ status: "idle", msg: "" });
+      var compileS = cs[0], setCs = cs[1];
+
+      function doCompile() {
+        var cur = s.value || {};
+        var icon = cur.iconPath || "";
+        setCs({ status: "compiling", msg: "" });
+        api({ action: "compile", iconPath: icon }).then(function (res) {
+          if (res && res.ok) setCs({ status: "done", msg: "编译成功 ✓ " + ((res.output && res.output.split("\n").pop()) || "") });
+          else setCs({ status: "error", msg: "编译失败：" + ((res && res.error) || "未知错误") });
+        }).catch(function (e) {
+          setCs({ status: "error", msg: "编译失败：" + String((e && e.message) || e) });
+        });
+      }
+
       return el("div", { style: st.root },
         el(PathField, {
           label: "工作目录（DSH 所在目录）",
@@ -176,6 +191,21 @@ window.__ModuleLoader__.load({
           onChange: function (x) { patch({ stickerDir: x }); },
           onPick: function () { pickDir("stickerDir"); }
         }),
+        el("div", { style: st.field },
+          el("div", { style: st.label }, "重新编译 exe 文件图标"),
+          el("div", { style: st.pathRow },
+            el("button", {
+              type: "button",
+              style: st.pickBtn,
+              onClick: doCompile,
+              disabled: compileS.status === "compiling"
+            }, compileS.status === "compiling" ? "编译中…" : "重新编译 exe 图标")
+          ),
+          compileS.msg
+            ? el("div", { style: compileS.status === "error" ? st.err : st.saved }, compileS.msg)
+            : null,
+          el("div", { style: st.hint }, "用上面「图标路径」选的图片重新编译插件内的 exe，改变 exe 文件本身在资源管理器里显示的图标。支持 png/ico/jpg/bmp（自动转 ico）。仅源码安装可用，编译约需数秒。")
+        ),
         el("div", { style: st.actions },
           el("button", { style: st.btnPrimary, onClick: save }, "保存"),
           s.saved ? el("span", { style: st.saved }, "已保存 ✓") : null,

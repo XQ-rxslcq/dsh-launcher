@@ -6,7 +6,7 @@
 // 3) /launcher 命令 → 唤起启动器 exe（隐藏命令行 + DS娘翻转动画 + 自动开浏览器）。
 import { join, dirname } from 'node:path'
 import { homedir } from 'node:os'
-import { writeFileSync } from 'node:fs'
+import { writeFileSync, existsSync } from 'node:fs'
 import { spawn } from 'node:child_process'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
@@ -79,6 +79,37 @@ export function apply(ctx) {
   scope.watch(() => writeConfig())
   writeConfig()
 
+  // 重新编译 exe 并嵌入指定图标（仅源码安装可用；覆盖 plugin/dist 与 dist 下的 exe）
+  const compileExe = async (iconPath) => {
+    try {
+      const buildScript = join(pluginDir, '..', 'scripts', 'build.ps1')
+      if (!existsSync(buildScript)) {
+        return { ok: false, error: '当前安装方式不含编译源码，仅源码安装（link）可在线编译；请手动在项目目录运行 scripts/build.ps1' }
+      }
+      const args = ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', buildScript]
+      if (iconPath) args.push('-Icon', iconPath)
+      const result = await new Promise((resolve) => {
+        let out = ''
+        let err = ''
+        let child
+        try {
+          child = spawn('powershell.exe', args, { stdio: ['ignore', 'pipe', 'pipe'] })
+        } catch (e) {
+          resolve({ code: -1, out: '', err: '无法启动 powershell：' + String((e && e.message) || e) })
+          return
+        }
+        child.stdout.on('data', (c) => { out += c })
+        child.stderr.on('data', (c) => { err += c })
+        child.on('error', (e) => { resolve({ code: -1, out, err: String((e && e.message) || e) }) })
+        child.on('close', (code) => { resolve({ code, out, err }) })
+      })
+      if (result.code === 0) return { ok: true, output: String(result.out || '').trim() }
+      return { ok: false, error: String(result.err || result.out || '编译失败').trim() }
+    } catch (e) {
+      return { ok: false, error: (e && e.message) ? e.message : String(e) }
+    }
+  }
+
   // ---------- 设置页读写通道 ----------
   const readBody = (req) => new Promise((resolve) => {
     let d = ''
@@ -105,6 +136,8 @@ export function apply(ctx) {
             await scope.update(body.patch || {})
             writeConfig()
             sendJson(res, { ok: true, value: scope.get() })
+          } else if (body.action === 'compile') {
+            sendJson(res, await compileExe(body.iconPath || ''))
           } else {
             sendJson(res, { ok: false, error: 'unknown action: ' + String(body.action) })
           }
