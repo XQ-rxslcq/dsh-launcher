@@ -2,3 +2,7 @@ node_modules/
 *.log
 .DS_Store
 Thumbs.db
+
+# 本地测试用素材（个人使用，不进仓库/不分发）
+.local-assets/
+.tmp-download/
