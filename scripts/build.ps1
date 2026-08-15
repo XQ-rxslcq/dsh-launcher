@@ -43,19 +43,31 @@ function Convert-ToIco([string]$imgPath) {
   Add-Type -AssemblyName System.Drawing
   $bmp = New-Object System.Drawing.Bitmap($imgPath)
   try {
-    # 缩放到 256x256（标准 exe 图标尺寸；原图过大时 csc 的 /win32icon 会拒绝）
+    # 缩放到 256x256（保留 alpha 通道）
     $size = 256
-    $scaled = New-Object System.Drawing.Bitmap($size, $size)
+    $scaled = New-Object System.Drawing.Bitmap($size, $size, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
     $g = [System.Drawing.Graphics]::FromImage($scaled)
     try {
+      $g.Clear([System.Drawing.Color]::Transparent)
       $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
       $g.DrawImage($bmp, 0, 0, $size, $size)
     } finally { $g.Dispose() }
-    $hicon = $scaled.GetHicon()
-    $icon = [System.Drawing.Icon]::FromHandle($hicon)
+    # 保存为 PNG 并直接嵌入 ICO（PNG 格式 ico，保留原始颜色与透明度，避免 GetHicon 的颜色降级）
+    $ms = New-Object System.IO.MemoryStream
+    try {
+      $scaled.Save($ms, [System.Drawing.Imaging.ImageFormat]::Png)
+      $pngBytes = $ms.ToArray()
+    } finally { $ms.Dispose() }
     $icoPath = [System.IO.Path]::ChangeExtension($imgPath, '.ico')
-    $fs = [System.IO.File]::Create($icoPath)
-    try { $icon.Save($fs) } finally { $fs.Dispose() }
+    $fs = New-Object System.IO.FileStream($icoPath, [System.IO.FileMode]::Create)
+    $bw = New-Object System.IO.BinaryWriter($fs)
+    try {
+      $bw.Write([UInt16]0); $bw.Write([UInt16]1); $bw.Write([UInt16]1)   # ICONDIR
+      $bw.Write([Byte]0); $bw.Write([Byte]0); $bw.Write([Byte]0); $bw.Write([Byte]0)  # 256x256, 0=256
+      $bw.Write([UInt16]1); $bw.Write([UInt16]32)                        # planes, bitCount
+      $bw.Write([UInt32]$pngBytes.Length); $bw.Write([UInt32]22)         # bytesInRes, imageOffset
+      $bw.Write($pngBytes)                                               # PNG 数据
+    } finally { $bw.Dispose(); $fs.Dispose() }
     return $icoPath
   } finally { $bmp.Dispose() }
 }
