@@ -164,14 +164,14 @@ window.__ModuleLoader__.load({
         ),
         el(PathField, {
           label: "图标路径（可选）",
-          hint: "留空用内置图标；可填图标文件，或用选择器选图标所在目录",
+          hint: "选图标所在目录会自动识别目录内的 png/ico/jpg/webp/bmp 图片，也可直接填文件路径（留空用默认窗口图标）",
           value: v.iconPath,
           onChange: function (x) { patch({ iconPath: x }); },
           onPick: function () { pickDir("iconPath"); }
         }),
         el(PathField, {
           label: "表情目录（可选）",
-          hint: "留空用内置表情；目录内 png/webp/jpg 按文件名顺序播放",
+          hint: "选表情所在目录（支持 png/webp/jpg/bmp/gif，按文件名顺序播放），留空则不显示表情",
           value: v.stickerDir,
           onChange: function (x) { patch({ stickerDir: x }); },
           onPick: function () { pickDir("stickerDir"); }

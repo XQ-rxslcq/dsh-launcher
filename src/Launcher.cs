@@ -373,7 +373,7 @@ namespace DshLauncher
             if (!string.IsNullOrEmpty(cfg.stickerDir) && Directory.Exists(cfg.stickerDir))
             {
                 var files = new List<string>();
-                foreach (var ext in new[] { "*.png", "*.webp", "*.jpg", "*.jpeg" })
+                foreach (var ext in new[] { "*.png", "*.webp", "*.jpg", "*.jpeg", "*.bmp", "*.gif" })
                     files.AddRange(Directory.GetFiles(cfg.stickerDir, ext));
                 files.Sort();
                 foreach (var f in files)
@@ -442,12 +442,12 @@ namespace DshLauncher
             if (File.Exists(cfg.iconPath)) return cfg.iconPath;
             if (Directory.Exists(cfg.iconPath))
             {
-                foreach (var name in new[] { "icon.png", "icon.ico", "icon.jpg" })
+                foreach (var name in new[] { "icon.png", "icon.ico", "icon.jpg", "icon.jpeg", "icon.webp", "icon.bmp", "icon.gif" })
                 {
                     var f = Path.Combine(cfg.iconPath, name);
                     if (File.Exists(f)) return f;
                 }
-                foreach (var ext in new[] { "*.png", "*.ico", "*.jpg", "*.jpeg" })
+                foreach (var ext in new[] { "*.png", "*.ico", "*.jpg", "*.jpeg", "*.webp", "*.bmp", "*.gif" })
                 {
                     var files = Directory.GetFiles(cfg.iconPath, ext);
                     if (files.Length > 0) return files[0];
