@@ -79,12 +79,11 @@ export function apply(ctx) {
   scope.watch(() => writeConfig())
   writeConfig()
 
-  // 重新编译 exe 并嵌入指定图标（仅源码安装可用；覆盖 plugin/dist 与 dist 下的 exe）
+  // 重新编译 exe 并嵌入指定图标（覆盖包内 dist 下的 exe）
   const compileExe = async (iconPath) => {
     try {
-      // 源码安装（link）：build.ps1 在 plugin 上级的 scripts/；npm/tgz 安装：在包内 scripts/
-      let buildScript = join(pluginDir, '..', 'scripts', 'build.ps1')
-      if (!existsSync(buildScript)) buildScript = join(pluginDir, 'scripts', 'build.ps1')
+      // 包根即仓库根：build.ps1 在包内 scripts/（源码安装与 npm/tgz 安装路径一致）
+      const buildScript = join(pluginDir, 'scripts', 'build.ps1')
       if (!existsSync(buildScript)) {
         return { ok: false, error: '未找到编译脚本 build.ps1' }
       }

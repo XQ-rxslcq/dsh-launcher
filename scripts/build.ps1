@@ -82,21 +82,9 @@ $args = @(
 & $csc $args
 if ($LASTEXITCODE -ne 0) { throw "csc failed with exit code $LASTEXITCODE" }
 
-# --- standalone config（源码安装才有 config.json） ---
+# --- standalone config（独立 exe 的默认配置，不进 npm 包） ---
 $cfg = Join-Path $root 'config.json'
 if (Test-Path $cfg) { Copy-Item $cfg (Join-Path $dist 'config.json') -Force }
-
-# --- 源码安装：同步 exe 与编译源码到 plugin/（供 npm/tgz 打包后仍能本地重编译） ---
-$pluginRoot = Join-Path $root 'plugin'
-if (Test-Path $pluginRoot) {
-  New-Item -ItemType Directory -Path (Join-Path $pluginRoot 'dist') -Force | Out-Null
-  Copy-Item $outExe (Join-Path $pluginRoot 'dist\dsh-launcher.exe') -Force
-  New-Item -ItemType Directory -Path (Join-Path $pluginRoot 'src') -Force | Out-Null
-  New-Item -ItemType Directory -Path (Join-Path $pluginRoot 'scripts') -Force | Out-Null
-  Copy-Item $src (Join-Path $pluginRoot 'src\Launcher.cs') -Force
-  Copy-Item (Join-Path $PSScriptRoot 'build.ps1') (Join-Path $pluginRoot 'scripts\build.ps1') -Force
-  Write-Output "Plugin assembled: $pluginRoot"
-}
 
 Write-Output "Built: $outExe ($((Get-Item $outExe).Length) bytes)"
 if ($iconIco) { Write-Output "exe 图标已嵌入: $iconIco" } else { Write-Output "纯代码编译（exe 用系统默认图标）" }
