@@ -59,6 +59,8 @@ window.__ModuleLoader__.load({
       var ws = props.workspaces;
       var state = React.useState({ status: "loading", value: null, error: "", saved: false });
       var s = state[0], setS = state[1];
+      var cs = React.useState({ status: "idle", msg: "" });
+      var compileS = cs[0], setCs = cs[1];
 
       function load() {
         setS({ status: "loading", value: null, error: "", saved: false });
@@ -119,9 +121,6 @@ window.__ModuleLoader__.load({
           setS({ status: "done", value: cur, error: String((e && e.message) || e), saved: false });
         });
       }
-
-      var cs = React.useState({ status: "idle", msg: "" });
-      var compileS = cs[0], setCs = cs[1];
 
       function doCompile() {
         var cur = s.value || {};
