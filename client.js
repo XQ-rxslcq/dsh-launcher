@@ -203,7 +203,7 @@ window.__ModuleLoader__.load({
           compileS.msg
             ? el("div", { style: compileS.status === "error" ? st.err : st.saved }, compileS.msg)
             : null,
-          el("div", { style: st.hint }, "用上面「图标路径」选的图片重新编译插件内的 exe，改变 exe 文件本身在资源管理器里显示的图标。支持 png/ico/jpg/bmp（自动转 ico）。仅源码安装可用，编译约需数秒。")
+          el("div", { style: st.hint }, "用上面「图标路径」选的图片重新编译插件内的 exe（覆盖同名文件，图标已嵌入）。支持 png/ico/jpg/bmp，png 保留透明背景、jpg 为白底。编译后若资源管理器图标未刷新，把 exe 复制到别处查看或按 F5。")
         ),
         el("div", { style: st.actions },
           el("button", { style: st.btnPrimary, onClick: save }, "保存"),

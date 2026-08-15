@@ -84,15 +84,21 @@ if ($Icon -and (Test-Path $Icon)) {
 $iconArgs = @()
 if ($iconIco) { $iconArgs += "/win32icon:$iconIco" }
 
-# --- compile ---
+# --- compile（先编译到临时文件，成功后原子替换，避免覆盖运行中的 exe 失败） ---
 $outExe = Join-Path $dist 'dsh-launcher.exe'
+$tmpExe = "$outExe.tmp"
+if (Test-Path $tmpExe) { Remove-Item $tmpExe -Force }
 $args = @(
   '/nologo', '/target:winexe',
-  "/out:$outExe"
+  "/out:$tmpExe"
 ) + $iconArgs + $refs + @($src)
 
 & $csc $args
 if ($LASTEXITCODE -ne 0) { throw "csc failed with exit code $LASTEXITCODE" }
+
+# 原子替换：先删旧 exe，再把临时文件移动为正式名（若 exe 正被占用会在此失败并提示）
+if (Test-Path $outExe) { Remove-Item $outExe -Force -ErrorAction SilentlyContinue }
+Move-Item $tmpExe $outExe -Force
 
 # --- standalone config（独立 exe 的默认配置，不进 npm 包） ---
 $cfg = Join-Path $root 'config.json'
