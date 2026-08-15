@@ -1,4 +1,4 @@
-﻿# dsh-launcher 插件（bundle）
+# dsh-launcher 插件（bundle）
 
 `@dsh-external/dsh-launcher` —— DeepSeek Harness 的 Windows 启动器插件。安装进 profile 后：
 
@@ -39,8 +39,8 @@
 dsh plugin --profile web add ./plugin
 
 # 从 GitHub / Gitee 直接安装
-dsh plugin --profile web add github:<用户名>/dsh-launcher
-dsh plugin --profile web add https://gitee.com/<用户名>/dsh-launcher.git
+dsh plugin --profile web add github:XQ-rxslcq/dsh-launcher
+dsh plugin --profile web add https://gitee.com/qqiong-art/dsh-launcher.git
 
 # tarball 分发（先打包）
 pnpm pack                                  # → @dsh-external-dsh-launcher-0.1.0.tgz

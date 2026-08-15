@@ -6,7 +6,7 @@
   "mode": "wait",
   "pnpmCandidates": [],
   "methods": [
-    { "name": "pnpm dsh web（主）", "file": "pnpm", "args": ["dsh", "web"] },
-    { "name": "node 直启 built CLI（备用）", "file": "node", "args": ["apps/cli/lib/bin.js", "web"] }
+    { "name": "pnpm dsh web（主）", "file": "pnpm", "args": ["dsh", "web", "--port", "3080"] },
+    { "name": "node 直启 built CLI（备用）", "file": "node", "args": ["apps/cli/lib/bin.js", "web", "--port", "3080"] }
   ]
 }

@@ -370,11 +370,14 @@ namespace DshLauncher
         private void LoadStickers()
         {
             stickerFrames.Clear();
-            if (!string.IsNullOrEmpty(cfg.stickerDir) && Directory.Exists(cfg.stickerDir))
+            string dir = cfg.stickerDir;
+            if (!string.IsNullOrEmpty(dir) && !Path.IsPathRooted(dir))
+                dir = Path.Combine(exeDir, dir);   // 相对路径 → 相对 exe 所在目录
+            if (!string.IsNullOrEmpty(dir) && Directory.Exists(dir))
             {
                 var files = new List<string>();
                 foreach (var ext in new[] { "*.png", "*.webp", "*.jpg", "*.jpeg", "*.bmp", "*.gif" })
-                    files.AddRange(Directory.GetFiles(cfg.stickerDir, ext));
+                    files.AddRange(Directory.GetFiles(dir, ext));
                 files.Sort();
                 foreach (var f in files)
                 {
@@ -439,17 +442,19 @@ namespace DshLauncher
         private string ResolveIconPath()
         {
             if (string.IsNullOrEmpty(cfg.iconPath)) return null;
-            if (File.Exists(cfg.iconPath)) return cfg.iconPath;
-            if (Directory.Exists(cfg.iconPath))
+            string p = cfg.iconPath;
+            if (!Path.IsPathRooted(p)) p = Path.Combine(exeDir, p);   // 相对路径 → 相对 exe 所在目录
+            if (File.Exists(p)) return p;
+            if (Directory.Exists(p))
             {
                 foreach (var name in new[] { "icon.png", "icon.ico", "icon.jpg", "icon.jpeg", "icon.webp", "icon.bmp", "icon.gif" })
                 {
-                    var f = Path.Combine(cfg.iconPath, name);
+                    var f = Path.Combine(p, name);
                     if (File.Exists(f)) return f;
                 }
                 foreach (var ext in new[] { "*.png", "*.ico", "*.jpg", "*.jpeg", "*.webp", "*.bmp", "*.gif" })
                 {
-                    var files = Directory.GetFiles(cfg.iconPath, ext);
+                    var files = Directory.GetFiles(p, ext);
                     if (files.Length > 0) return files[0];
                 }
             }

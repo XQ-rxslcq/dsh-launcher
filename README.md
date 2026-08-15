@@ -1,4 +1,4 @@
-﻿# DSH 启动器插件（dsh-launcher）
+# DSH 启动器插件（dsh-launcher）
 
 Windows 桌面启动器 + DeepSeek Harness（DSH）插件。双击 exe 或在聊天里输入 `/launcher` → **隐藏命令行**启动 DSH → 自动打开默认浏览器进入 `http://127.0.0.1:3080`。
 
@@ -37,8 +37,8 @@ Windows 桌面启动器 + DeepSeek Harness（DSH）插件。双击 exe 或在聊
 dsh plugin --profile web add @dsh-external/dsh-launcher
 
 # 从 GitHub / Gitee 直接安装
-dsh plugin --profile web add github:<你的用户名>/dsh-launcher
-dsh plugin --profile web add https://gitee.com/<你的用户名>/dsh-launcher.git
+dsh plugin --profile web add github:XQ-rxslcq/dsh-launcher
+dsh plugin --profile web add https://gitee.com/qqiong-art/dsh-launcher.git
 
 # 本地 tarball（先 pnpm pack 打包）
 dsh plugin --profile web add ./@dsh-external-dsh-launcher-0.1.0.tgz

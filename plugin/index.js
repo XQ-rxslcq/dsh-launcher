@@ -40,16 +40,17 @@ export function apply(ctx) {
   const scope = ctx.settings.register('launcher', schema)
 
   const buildMethods = (v) => {
+    const port = String(v.port || 3080)
     if (v.launchMethod === 'node') {
-      return [{ name: 'node 直启 built CLI', file: 'node', args: ['apps/cli/lib/bin.js', 'web'] }]
+      return [{ name: 'node 直启 built CLI', file: 'node', args: ['apps/cli/lib/bin.js', 'web', '--port', port] }]
     }
     if (v.launchMethod === 'custom') {
       const args = Array.isArray(v.customArgs) ? v.customArgs : []
       return [{ name: '自定义命令', file: v.customCommand || 'node', args }]
     }
     return [
-      { name: 'pnpm dsh web（主）', file: 'pnpm', args: ['dsh', 'web'] },
-      { name: 'node 直启 built CLI（备用）', file: 'node', args: ['apps/cli/lib/bin.js', 'web'] }
+      { name: 'pnpm dsh web（主）', file: 'pnpm', args: ['dsh', 'web', '--port', port] },
+      { name: 'node 直启 built CLI（备用）', file: 'node', args: ['apps/cli/lib/bin.js', 'web', '--port', port] }
     ]
   }
 
