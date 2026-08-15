@@ -100,6 +100,22 @@ if ($LASTEXITCODE -ne 0) { throw "csc failed with exit code $LASTEXITCODE" }
 if (Test-Path $outExe) { Remove-Item $outExe -Force -ErrorAction SilentlyContinue }
 Move-Item $tmpExe $outExe -Force
 
+# 通知系统刷新该 exe 的图标（Shell API SHChangeNotify），尽量让资源管理器立即显示新图标
+try {
+  if (-not ('IconRefresh' -as [type])) {
+    Add-Type -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+public class IconRefresh {
+    [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+    public static extern void SHChangeNotify(int wEventId, int uFlags, string dwItem1, IntPtr dwItem2);
+}
+"@
+  }
+  # SHCNE_UPDATEITEM(0x2000) | SHCNF_PATHW(0x5)
+  [IconRefresh]::SHChangeNotify(0x2000, 0x5, $outExe, [IntPtr]::Zero)
+} catch { }
+
 # --- standalone config（独立 exe 的默认配置，不进 npm 包） ---
 $cfg = Join-Path $root 'config.json'
 if (Test-Path $cfg) { Copy-Item $cfg (Join-Path $dist 'config.json') -Force }
