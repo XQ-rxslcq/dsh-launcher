@@ -43,7 +43,15 @@ function Convert-ToIco([string]$imgPath) {
   Add-Type -AssemblyName System.Drawing
   $bmp = New-Object System.Drawing.Bitmap($imgPath)
   try {
-    $hicon = $bmp.GetHicon()
+    # 缩放到 256x256（标准 exe 图标尺寸；原图过大时 csc 的 /win32icon 会拒绝）
+    $size = 256
+    $scaled = New-Object System.Drawing.Bitmap($size, $size)
+    $g = [System.Drawing.Graphics]::FromImage($scaled)
+    try {
+      $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+      $g.DrawImage($bmp, 0, 0, $size, $size)
+    } finally { $g.Dispose() }
+    $hicon = $scaled.GetHicon()
     $icon = [System.Drawing.Icon]::FromHandle($hicon)
     $icoPath = [System.IO.Path]::ChangeExtension($imgPath, '.ico')
     $fs = [System.IO.File]::Create($icoPath)
