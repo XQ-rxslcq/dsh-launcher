@@ -15,7 +15,8 @@
     "client.js",
     "cordis.patch.yml",
     "dist/dsh-launcher.exe",
-    "assets"
+    "src/Launcher.cs",
+    "scripts/build.ps1"
   ],
   "dsh": {
     "bundle": {

@@ -82,9 +82,11 @@ export function apply(ctx) {
   // 重新编译 exe 并嵌入指定图标（仅源码安装可用；覆盖 plugin/dist 与 dist 下的 exe）
   const compileExe = async (iconPath) => {
     try {
-      const buildScript = join(pluginDir, '..', 'scripts', 'build.ps1')
+      // 源码安装（link）：build.ps1 在 plugin 上级的 scripts/；npm/tgz 安装：在包内 scripts/
+      let buildScript = join(pluginDir, '..', 'scripts', 'build.ps1')
+      if (!existsSync(buildScript)) buildScript = join(pluginDir, 'scripts', 'build.ps1')
       if (!existsSync(buildScript)) {
-        return { ok: false, error: '当前安装方式不含编译源码，仅源码安装（link）可在线编译；请手动在项目目录运行 scripts/build.ps1' }
+        return { ok: false, error: '未找到编译脚本 build.ps1' }
       }
       const args = ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', buildScript]
       if (iconPath) args.push('-Icon', iconPath)
