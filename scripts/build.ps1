@@ -100,7 +100,7 @@ if ($LASTEXITCODE -ne 0) { throw "csc failed with exit code $LASTEXITCODE" }
 if (Test-Path $outExe) { Remove-Item $outExe -Force -ErrorAction SilentlyContinue }
 Move-Item $tmpExe $outExe -Force
 
-# 通知系统刷新该 exe 的图标（Shell API SHChangeNotify），尽量让资源管理器立即显示新图标
+# 通知系统刷新图标（Shell API），尽量让资源管理器立即显示新图标
 try {
   if (-not ('IconRefresh' -as [type])) {
     Add-Type -TypeDefinition @"
@@ -112,9 +112,14 @@ public class IconRefresh {
 }
 "@
   }
-  # SHCNE_UPDATEITEM(0x2000) | SHCNF_PATHW(0x5)
+  # SHCNE_UPDATEITEM(0x2000) | SHCNF_PATHW(0x5)：通知该文件图标更新
   [IconRefresh]::SHChangeNotify(0x2000, 0x5, $outExe, [IntPtr]::Zero)
+  # SHCNE_ASSOCCHANGED(0x8000000) | SHCNF_IDLIST(0x0)：通知全局图标/关联变更，强制刷新缓存
+  [IconRefresh]::SHChangeNotify(0x8000000, 0x0, [IntPtr]::Zero, [IntPtr]::Zero)
 } catch { }
+
+# 再触发一次系统图标缓存刷新
+try { & "$env:WINDIR\System32\ie4uinit.exe" -show 2>$null | Out-Null } catch { }
 
 # --- standalone config（独立 exe 的默认配置，不进 npm 包） ---
 $cfg = Join-Path $root 'config.json'
