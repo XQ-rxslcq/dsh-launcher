@@ -36,7 +36,7 @@ Windows 桌面启动器 + DeepSeek Harness（DSH）插件。双击 exe 或在聊
 ```bash
 # 从 GitHub / Gitee 直接安装
 dsh plugin --profile web add github:XQ-rxslcq/dsh-launcher
-dsh plugin --profile web add https://gitee.com/qqiong-art/dsh-launcher.git
+dsh plugin --profile web add git+https://gitee.com/qqiong-art/dsh-launcher.git
 
 # npm（发布后）
 dsh plugin --profile web add @dsh-external/dsh-launcher
@@ -66,6 +66,8 @@ dsh plugin --profile web add ./dsh-launcher    # 仓库根即插件包
 ---
 
 ## 配置
+
+> ⚠️ **首次使用必做**：先打开 **设置 → 启动器设置**，填好「工作目录」（DSH 所在目录，例如 `D:\path\to\deepseek-harness`）并点「保存」。工作目录默认是空的，不填就 `/launcher` 会直接提示"请先配置工作目录"而无法启动。
 
 打开 **设置 → 启动器设置**，点「保存」即可。配置持久化到 `~/.dsh/settings.yaml` 的 `launcher:` 分节，并同步写入 `~/.dsh/launcher-config.json`（exe 读取它）。
 
